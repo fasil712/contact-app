@@ -20,6 +20,7 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 @RestController
 @RequestMapping("/api/v1/contacts")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class ContactController {
     private final ContactService contactService;
 
