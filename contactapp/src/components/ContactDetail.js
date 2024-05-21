@@ -108,7 +108,7 @@ const ContactDetail = ({ updateContact, updateImage }) => {
                 <div className="input-box">
                   <span className="details">Email</span>
                   <input
-                    type="text"
+                    type="email"
                     value={contact.email}
                     onChange={onChange}
                     name="email"
@@ -159,6 +159,9 @@ const ContactDetail = ({ updateContact, updateImage }) => {
               <div className="form_footer">
                 <button type="submit" className="btn">
                   Save
+                </button>
+                <button id="delete" type="submit" className="btn btn-danger">
+                  Delete
                 </button>
               </div>
             </form>

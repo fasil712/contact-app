@@ -271,6 +271,10 @@ i {
 	column-gap: 12px;
 }
 
+.auth__image {
+	width: 35px;
+}
+
 .contact__image {
 	width: 50px;
 }
@@ -284,6 +288,20 @@ i {
 	border-radius: var(--radius-circle);
 }
 
+.auth__image img {
+	width: 100%;
+	border: 3px solid var(--selective-blue);
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+	object-position: center;
+	border-radius: var(--radius-circle);
+	cursor: pointer;
+}
+.auth__icon{
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
 .contact_name {
 	color: #3c3f3f;
 	font-size: 1.25rem;

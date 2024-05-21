@@ -8,6 +8,7 @@ import { toastError } from "./api/ToastService";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Login from "./components/Login";
 
 function App() {
   const modalRef = useRef();
@@ -24,7 +25,7 @@ function App() {
     status: "",
   });
 
-  const getAllContacts = async (page = 0, size = 10) => {
+  const getAllContacts = async (page = 0, size = 8) => {
     try {
       setCurrentPage(page);
       const { data } = await getContacts(page, size);
@@ -118,6 +119,7 @@ function App() {
                 />
               }
             />
+            <Route path="/auth/login" element={<Login/>}/>
           </Routes>
         </div>
       </main>
