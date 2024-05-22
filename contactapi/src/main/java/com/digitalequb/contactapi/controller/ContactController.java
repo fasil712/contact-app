@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static com.digitalequb.contactapi.constant.Constant.PHOTO_DIRECTORY;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
@@ -41,6 +42,11 @@ public class ContactController {
         return ResponseEntity.ok().body(contactService.getContactById(id));
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteContact(@PathVariable(value = "id") String id) {
+        contactService.deleteContact(id);
+    }
+
     @PutMapping("/photo")
     public ResponseEntity<String> uploadPhoto(@RequestParam("id") String id, @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok().body(contactService.uploadPhoto(id, file));
@@ -49,5 +55,10 @@ public class ContactController {
     @GetMapping(path = "/image/{filename}", produces = {IMAGE_PNG_VALUE, IMAGE_JPEG_VALUE})
     public byte[] getPhoto(@PathVariable("filename") String filename) throws IOException {
         return Files.readAllBytes(Paths.get(PHOTO_DIRECTORY + filename));
+    }
+
+    @GetMapping("/search")
+    public List<Contact> searchProducts(@RequestParam String query) {
+        return contactService.searchContacts(query);
     }
 }

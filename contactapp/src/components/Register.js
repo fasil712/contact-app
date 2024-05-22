@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-function Login() {
+function Register() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const handleLogin = () => {
+  const handleRegister = () => {
     try {
     } catch (error) {
       console.log(error.message);
@@ -15,10 +15,32 @@ function Login() {
   };
   return (
     <div className="profile__login">
-      <h2>Login</h2>
+      <h2>Register</h2>
       <div>
         <form className="form">
           <div className="user-login">
+            <div className="user-details">
+              <div className="input-box">
+                <span className="details">First Name</span>
+                <input
+                  type="text"
+                  // value={contact.firstName}
+                  // onChange={onChange}
+                  name="firstName"
+                  required
+                />
+              </div>
+              <div className="input-box">
+                <span className="details">Last Name</span>
+                <input
+                  type="text"
+                  // value={contact.lastName}
+                  // onChange={onChange}
+                  name="lastName"
+                  required
+                />
+              </div>
+            </div>
             <div className="login-input-box">
               <span className="details">Email</span>
               <input
@@ -42,9 +64,9 @@ function Login() {
           </div>
           <div className="form_footer">
             <button type="submit" className="btn">
-              Login
+              Register
             </button>
-            <Link to={"/auth/register"}>REGISTER</Link>
+            <Link to={"/auth/login"}>LOGIN</Link>
           </div>
         </form>
       </div>
@@ -52,4 +74,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;

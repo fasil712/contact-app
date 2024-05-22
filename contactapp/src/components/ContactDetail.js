@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
-import { getContact } from "../api/ContactService";
+import { Link, Navigate, useParams } from "react-router-dom";
+import { deleteContact, getContact } from "../api/ContactService";
 import { toastError, toastSuccess } from "../api/ToastService";
 
 const ContactDetail = ({ updateContact, updateImage }) => {
@@ -57,9 +57,24 @@ const ContactDetail = ({ updateContact, updateImage }) => {
 
   const onUpdateContact = async (event) => {
     event.preventDefault();
-    await updateContact(contact);
-    fetchContact(id);
-    toastSuccess("Contact Updated");
+    try {
+      await updateContact(contact);
+      fetchContact(id);
+      toastSuccess("Contact Updated");
+    } catch (error) {
+      toastError(error.message);
+    }
+  };
+
+  const handleDelete = async (event) => {
+    event.preventDefault();
+    try {
+      await deleteContact(id);
+      toastSuccess("Contact Deleted");
+      // Navigate({ to: "/Contacts" });
+    } catch (error) {
+      toastError(error.message);
+    }
   };
 
   useEffect(() => {
@@ -160,7 +175,12 @@ const ContactDetail = ({ updateContact, updateImage }) => {
                 <button type="submit" className="btn">
                   Save
                 </button>
-                <button id="delete" type="submit" className="btn btn-danger">
+                <button
+                  id="delete"
+                  onClick={handleDelete}
+                  type="button"
+                  className="btn btn-danger"
+                >
                   Delete
                 </button>
               </div>

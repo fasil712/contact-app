@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -38,10 +39,6 @@ public class ContactService {
     }
 
     public Contact createContact(Contact contact) {
-        return contactRepository.save(contact);
-    }
-
-    public Contact updateContact(Contact contact) {
         return contactRepository.save(contact);
     }
 
@@ -76,4 +73,8 @@ public class ContactService {
             throw new RuntimeException("Unable to save image");
         }
     };
+
+    public List<Contact> searchContacts(String name) {
+        return contactRepository.searchAllByName(name);
+    }
 }

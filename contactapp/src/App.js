@@ -1,20 +1,31 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Header from "./components/Header";
 import ContactList from "./components/ContactList";
-import { getContacts, saveContact, udpatePhoto } from "./api/ContactService";
-import { Routes, Route, Navigate } from "react-router-dom";
+import {
+  getContacts,
+  saveContact,
+  searchContacts,
+  udpatePhoto,
+} from "./api/ContactService";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import ContactDetail from "./components/ContactDetail";
 import { toastError } from "./api/ToastService";
 
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Login from "./components/Login";
+import { debounce } from "lodash";
+import Register from "./components/Register";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
   const modalRef = useRef();
   const fileRef = useRef();
+  const location = useLocation();
   const [data, setData] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
+  const [query, setQuery] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
   const [file, setFile] = useState(undefined);
   const [values, setValues] = useState({
     name: "",
@@ -36,6 +47,18 @@ function App() {
       toastError(error.message);
     }
   };
+
+  const fetchSearchResults = useCallback(
+    debounce(async (searchQuery) => {
+      try {
+        const response = await searchContacts(searchQuery);
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error("Error fetching search results", error);
+      }
+    }, 500),
+    []
+  );
 
   const onChange = (event) => {
     setValues({ ...values, [event.target.name]: event.target.value });
@@ -90,36 +113,57 @@ function App() {
     show ? modalRef.current.showModal() : modalRef.current.close();
 
   useEffect(() => {
-    getAllContacts();
-  }, []);
+    if (query) {
+      fetchSearchResults(query);
+    } else {
+      setSearchResults(null);
+      getAllContacts();
+    }
+  }, [query, fetchSearchResults]);
+
+  const handleInputChange = (event) => {
+    setQuery(event.target.value);
+  };
 
   return (
     <>
-      <Header toggleModal={toggleModal} nbOfContacts={data.totalElements} />
+      {location.pathname !== "/auth/login" &&
+        location.pathname !== "/auth/register" && (
+          <Header
+            nbOfContacts={data.totalElements}
+            query={query}
+            handleInputChange={handleInputChange}
+          />
+        )}
       <main className="main">
         <div className="container">
           <Routes>
             <Route path="/" element={<Navigate to={"/contacts"} />} />
-            <Route
-              path="/contacts"
-              element={
-                <ContactList
-                  data={data}
-                  currentPage={currentPage}
-                  getAllContacts={getAllContacts}
-                />
-              }
-            />
-            <Route
-              path="/contacts/:id"
-              element={
-                <ContactDetail
-                  updateContact={updateContact}
-                  updateImage={updateImage}
-                />
-              }
-            />
-            <Route path="/auth/login" element={<Login/>}/>
+            {location.pathname !== "/auth/login" &&
+              location.pathname !== "/auth/register" && (
+                <>
+                  <Route
+                    path="/contacts"
+                    element={
+                      <ProtectedRoute
+                        element={
+                          <ContactList
+                            data={data}
+                            currentPage={currentPage}
+                            getAllContacts={getAllContacts}
+                          />
+                        }
+                      />
+                    }
+                  />
+                  <Route
+                    path="/contacts/:id"
+                    element={<ProtectedRoute element={<ContactDetail />} />}
+                  />
+                </>
+              )}
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/register" element={<Register />} />
           </Routes>
         </div>
       </main>
